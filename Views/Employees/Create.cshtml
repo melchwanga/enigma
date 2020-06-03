@@ -1,0 +1,92 @@
+﻿@model EmployeeDatabase.Models.Employee
+
+@{
+    ViewData["Title"] = "Create Employee";
+}
+
+    <h1>Create Employee</h1>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="FirstName" class="control-label"></label>
+                <input asp-for="FirstName" class="form-control" />
+                <span asp-validation-for="FirstName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="LastName" class="control-label"></label>
+                <input asp-for="LastName" class="form-control" />
+                <span asp-validation-for="LastName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="EmailAddress" class="control-label"></label>
+                <input asp-for="EmailAddress" class="form-control" />
+                <span asp-validation-for="EmailAddress" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PhoneNumber" class="control-label"></label>
+                <input asp-for="PhoneNumber" class="form-control" />
+                <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DOB" class="control-label"></label>
+                <input asp-for="DOB" class="form-control" />
+                <span asp-validation-for="DOB" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="GenderId" class="control-label"></label>
+                <select asp-for="GenderId" class="form-control" asp-items="ViewBag.GenderId"></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="MaritalStatusId" class="control-label"></label>
+                <select asp-for="MaritalStatusId" class="form-control" asp-items="ViewBag.MaritalStatusId"></select>
+            </div>
+            <div class="form-group">
+                <label class="control-label">County</label>
+                <select id="county" class="form-control" asp-items="ViewBag.CountyID">
+                    <option>Please Select...</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label asp-for="SubCountyID" class="control-label"></label>
+                <select id="sub-county" asp-for="SubCountyID" class="form-control"></select>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        $(document).ready(function () {
+          $("#county").change(function(e){
+              var id = $("#county option:selected").val();
+              //alert(id);
+            $.ajax({
+                type: "GET",
+                url: "/api/APICounties/"+id,
+                data: "{}",
+                success: function (data) {
+                    //console.log(data); return false;
+                    var subcounties = data.subCounties;
+                    console.log(subcounties);
+                    var s = '<option>Please Select...</option>';
+                    for (var i = 0; i < subcounties.length; i++) {
+                        s += '<option value="' + subcounties[i].id + '">' + subcounties[i].name + '</option>';
+                    }
+                    $("#sub-county").html(s);
+                }
+            });
+           });
+        });
+    </script>
+}
